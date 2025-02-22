@@ -11,12 +11,13 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Main Page</a>
+            <!-- <a class="navbar-brand" href="index.html">Main Page</a> -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <div id="navbar">
+                    <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="user.html">Users Page</a>
                     </li>
@@ -25,32 +26,30 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="order.html">Orders Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="role.html">Roles Page</a>
-                    </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li> -->
-                <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-                </li> -->
-                <!-- <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li> -->
-                <!-- </ul>
-                <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
+                    </li> -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li> -->
+                    <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li> -->
+                    <!-- </ul>
+                    <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form> -->
+                </div>
             </div>
         </div>
     </nav>
@@ -111,27 +110,13 @@
 
     <script src="js/script.js"></script>
     <script>
+        createNavbar(navItems);
         getUsers().then(users => { 
-            console.log(users);
-            
-            // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
+            console.log(users);             // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
 
             for (let i = 0; i< users.length; i++) 
             {
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = 
-            `
-                <td>${users[i].id}</td>
-                <td>${users[i].firstName}</td>
-                <td>${users[i].lastName}</td>
-                <td>${users[i].phoneNumber}</td>
-                <td>${users[i].email}</td>
-                <td>${users[i].createdAt}</td>
-                <td class="role-id">${users[i].roleId}</td>
-            `;
-
-            let tbodyElement = document.getElementById("users");
-            tbodyElement.appendChild(newRow);   
+                addingUserToTable(users[i]);
             }
 
         test();
@@ -163,42 +148,71 @@
         }
         
 
-    
-        const myForm = document.getElementById("add-new-user-form");
-
-        myForm.addEventListener("submit", function(event) {
+        const productAddForm = document.querySelector("form");
+        productAddForm.addEventListener("submit", event => {
             event.preventDefault();
+
+            const data = new FormData(productAddForm);
+
+            addUser(data)
+            .then(data => {                                // json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
+                addingUserToTable(data)   
+            })
+            .catch(error => console.log(error))
+        });
+
+        function addingUserToTable(data)
+        {
+            let newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>${data.id}</td>
+                        <td>${data.firstName}</td>
+                        <td>${data.lastName}</td>
+                        <td>${data.phoneNumber}</td>
+                        <td>${data.email}</td>
+                        <td>${data.createdAt}</td>
+                        <td>${data.roleId}</td>
+                    `;
+
+                    let tbodyElement = document.getElementById("users");
+                    tbodyElement.appendChild(newRow); 
+        }
+    
+        // const myForm = document.getElementById("add-new-user-form");
+
+        // myForm.addEventListener("submit", function(event) {
+        //     event.preventDefault();
             
 
-            const data = new FormData(myForm);
-            console.log(data);
+        //     const data = new FormData(myForm);
+        //     console.log(data);
       
-            const request = new XMLHttpRequest();
+        //     const request = new XMLHttpRequest();
 
-            request.onload = function(){                     // json string ko'rinishida javob keladi
-                const data = JSON.parse(request.response);   // json stringni javascript object ko'rinishiga konvertatsiya qilinayapti
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td>${data.id}</td>
-                    <td>${data.firstName}</td>
-                    <td>${data.lastName}</td>
-                    <td>${data.phoneNumber}</td>
-                    <td>${data.email}</td>
-                    <td>${data.createdAt}</td>
-                    <td>${data.roleId}</td>
-                `;
+        //     request.onload = function(){                     // json string ko'rinishida javob keladi
+        //         const data = JSON.parse(request.response);   // json stringni javascript object ko'rinishiga konvertatsiya qilinayapti
+        //         let newRow = document.createElement("tr");
+        //         newRow.innerHTML = `
+        //             <td>${data.id}</td>
+        //             <td>${data.firstName}</td>
+        //             <td>${data.lastName}</td>
+        //             <td>${data.phoneNumber}</td>
+        //             <td>${data.email}</td>
+        //             <td>${data.createdAt}</td>
+        //             <td>${data.roleId}</td>
+        //         `;
 
-                let tbodyElement = document.getElementById("users");
-                tbodyElement.appendChild(newRow); 
+        //         let tbodyElement = document.getElementById("users");
+        //         tbodyElement.appendChild(newRow); 
 
-            }
+        //     }
 
-            request.open("Post", "https://localhost:7236/api/User");
-            request.setRequestHeader("accept", "*/*");
-            request.setRequestHeader("Content-Type", "application/json");
+        //     request.open("Post", "https://localhost:7236/api/User");
+        //     request.setRequestHeader("accept", "*/*");
+        //     request.setRequestHeader("Content-Type", "application/json");
 
-            request.send(JSON.stringify(Object.fromEntries(data)));
-        });
+        //     request.send(JSON.stringify(Object.fromEntries(data)));
+        // });
 
     </script>
 

@@ -11,46 +11,48 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Main Page</a>
+            <!-- <a class="navbar-brand" href="index.html">Main Page</a> -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="user.html">Users Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="product.html">Products Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="order.html">Orders Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="role.html">Roles Page</a>
-                    </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li> -->
-                <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-                </li> -->
-                <!-- <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li> -->
-                <!-- </ul>
-                <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
+                <div id="navbar">
+                    <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="user.html">Users Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="product.html">Products Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="order.html">Orders Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="role.html">Roles Page</a>
+                        </li> -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li> -->
+                    <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li> -->
+                    <!-- </ul>
+                    <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form> -->
+                </div>
             </div>
         </div>
     </nav>
@@ -74,7 +76,7 @@
             <br><br>
             <div>
                 <h3 style="text-align: center">Role form</h3>
-                <form  id="add-new-role-form">
+                <form>
                     <div class="input-group mb-3">
                         <input class="form-control" id="name" type="text" name="name" placeholder="Role name:"/>
                     </div>
@@ -87,22 +89,13 @@
     <script src="js/script.js"></script>
     <script>
 
+        createNavbar(navItems);
         getRoles().then(roles => { 
-            console.log(roles);
-            
-            // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
+            console.log(roles);      // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
 
             for (let i = 0; i< roles.length; i++) 
             {
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = 
-                `
-                <td>${roles[i].id}</td>
-                <td>${roles[i].name}</td>
-                `;
-
-            let tbodyElement = document.getElementById("table");
-            tbodyElement.appendChild(newRow);   
+                addingRoleToTable(roles[i]);
             }
 
         }).catch(error => {                   // arrow function qabul qiladi 
@@ -110,37 +103,34 @@
         });    
         
 
-
-        const myForm = document.getElementById("add-new-role-form");
-
-        myForm.addEventListener("submit", function(event) {
+        const roleAddForm = document.querySelector("form");
+        roleAddForm.addEventListener("submit", event => {
             event.preventDefault();
-            
 
-            const data = new FormData(myForm);
-            console.log(data);
-      
-            const request = new XMLHttpRequest();
+            const data = new FormData(roleAddForm);
 
-            request.onload = function(){                     // json string ko'rinishida javob keladi
-                const data = JSON.parse(request.response);   // json stringni javascript object ko'rinishiga konvertatsiya qilinayapti
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = `
-                    <td>${data.id}</td>
-                    <td>${data.name}</td>
-                `;
-
-                let tbodyElement = document.getElementById("table");
-                tbodyElement.appendChild(newRow); 
-
-            }
-
-            request.open("Post", "https://localhost:7236/api/Role");
-            request.setRequestHeader("accept", "*/*");
-
-            request.send(JSON.stringify(Object.fromEntries(data)));
+            addRole(data)
+            .then(data => {                                // json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
+                addingRoleToTable(data);
+            })
+            .catch(error => console.log(error))
         });
 
+        function addingRoleToTable(data)
+        {
+            let newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.name}</td>
+            `;
+
+            let tbodyElement = document.getElementById("table");
+            tbodyElement.appendChild(newRow);   
+        }
+
+
+
+        
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

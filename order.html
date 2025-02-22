@@ -11,46 +11,48 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Main Page</a>
+            <!-- <a class="navbar-brand" href="index.html">Main Page</a> -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="user.html">Users Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="product.html">Products Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="order.html">Orders Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="role.html">Roles Page</a>
-                    </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li> -->
-                <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-                </li> -->
-                <!-- <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li> -->
-                <!-- </ul>
-                <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
+                <div id="navbar">
+                    <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="user.html">Users Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="product.html">Products Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="order.html">Orders Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="role.html">Roles Page</a>
+                        </li> -->
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li> -->
+                    <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                    </li> -->
+                    <!-- <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li> -->
+                    <!-- </ul>
+                    <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form> -->
+               </div>
             </div>
         </div>
     </nav>
@@ -91,25 +93,14 @@
     <script src="js/script.js"></script>
     <script>
 
+        createNavbar(navItems);
         getOrders()
         .then(orders => { 
-            console.log(orders);
-            
-            // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
+            console.log(orders);   // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
 
             for (let i = 0; i< orders.length; i++) 
             {
-                let newRow = document.createElement("tr");
-                newRow.innerHTML = 
-                `
-                <td>${orders[i].id}</td>
-                <td>${orders[i].createdAt}</td>
-                <td>${orders[i].userId}</td>
-                <td>${orders[i].totalSum}</td>
-                `;
-
-            let tbodyElement = document.getElementById("table");
-            tbodyElement.appendChild(newRow);   
+                addingOrderToTable(orders[i]); 
             }
 
         }).catch(error => {                   // arrow function qabul qiladi 
@@ -130,32 +121,26 @@
             
             data.delete("productId");
             data.set("productIds", productIds);
-            console.log(data);
+            // console.log(data);
 
-            // fetch("https://localhost:7236/api/Order", {
-            //     method: "Post",
-            //     body: data
-            // })
-            // .then(response => response.json())              // serverdan kelgan ma'lumotni response deb pereminiga olayapti va responseni json ko'rinishga o'tgakazayapti! 
-            // .then(data => { 
-            //     console.log(data);
-            //                             //    json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
-            //     // let newRow = document.createElement("tr");  
-            //     //     newRow.innerHTML = `
-            //     //     <td>${data.id}</td>
-            //     //     <td>${data.name}</td>
-            //     //     <td>${data.price}</td>
-            //     //     <td>${data.size}</td>
-            //     //     <td>
-            //     //         <a href="${"https://localhost:7236/api/Product" + data.photo}">${data.photo}</a>
-            //     //     </td>
-            //     //     <td>${data.quantity}</td>
-            //     //     `;
+            console.log(JSON.stringify(Object.fromEntries(data)));
 
-            //     //     let tbodyElement = document.getElementById("products");
-            //     //     tbodyElement.appendChild(newRow);   
-            // })
-            // .catch(error => console.log(error))
+            fetch("https://localhost:7236/api/Order", {
+                method: "Post",
+                body: {
+                    'userId': data.get("userId"),
+                    'productIds': [data.get("productIds")]
+                },
+                headers: {
+                    'Content-Type': 'application/json'  
+                }
+            })
+            .then(response => response.json())              // serverdan kelgan ma'lumotni response deb pereminiga olayapti va responseni json ko'rinishga o'tgakazayapti! 
+            .then(result => { 
+                console.log(result);                          //   json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
+                addingOrderToTable(result);
+            })
+            .catch(error => console.log(error))
         });
 
         getUsers()
@@ -173,7 +158,7 @@
             })
             .catch(error => console.log(error));
 
-        getProducts2()
+        getProducts()
         .then(products => {
             for (let i = 0; i < products.length; i++) {
                 let product = products[i];
@@ -181,7 +166,7 @@
                 let input = document.createElement("input");
                 input.className ="form-check-input";
                 input.type = "checkbox";
-                input.name = `productId[${i}]`;     // Har bitta product name o'zgaradi
+                input.name = `productId`;     // Har bitta product name o'zgaradi
                 input.value = product.id;
                 input.checked = false;
 
@@ -199,6 +184,7 @@
 
             } 
 
+
             // Bu example uchun
             // <div class="mb-3 form-check">                    
             //     <label for="productIds">Pepsi</label>
@@ -206,6 +192,20 @@
             // </div>
         })   
         .catch(error=> console.log(error));
+
+        function addingOrderToTable(result)
+        {
+            let newRow = document.createElement("tr");  
+            newRow.innerHTML = `
+                <td>${result.id}</td>
+                <td>${result.createdAt}</td>
+                <td>${result.userId}</td>
+                <td>${result.totalSum}</td>
+            `;
+
+            let tbodyElement = document.getElementById("table");
+            tbodyElement.appendChild(newRow);   
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
