@@ -9,53 +9,6 @@
     <title>Orders Page</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <!-- <a class="navbar-brand" href="index.html">Main Page</a> -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div id="navbar">
-                    <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="user.html">Users Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="product.html">Products Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="order.html">Orders Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="role.html">Roles Page</a>
-                        </li> -->
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                    </li> -->
-                    <!-- <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li> -->
-                    <!-- </ul>
-                    <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form> -->
-               </div>
-            </div>
-        </div>
-    </nav>
     <div class="row">
         <div class="col-1">
         </div>
@@ -93,7 +46,7 @@
     <script src="js/script.js"></script>
     <script>
 
-        createNavbar(navItems);
+        createNavbar();
         getOrders()
         .then(orders => { 
             console.log(orders);   // script fayldagi getUsers funksiyadan return qilingan ma'lumot users periminiga olinayapti
@@ -118,19 +71,16 @@
             const data = new FormData(orderAddingForm);
             
             let productIds = data.getAll("productId");
-            
-            data.delete("productId");
-            data.set("productIds", productIds);
-            // console.log(data);
 
-            console.log(JSON.stringify(Object.fromEntries(data)));
+            const payload = {
+                userId: data.get("userId"),
+                productIds :productIds.map(id=>id)
+            };
 
+            console.log(payload);
             fetch("https://localhost:7236/api/Order", {
                 method: "Post",
-                body: {
-                    'userId': data.get("userId"),
-                    'productIds': [data.get("productIds")]
-                },
+                body: JSON.stringify(payload),     // Bu yerda payload obyekt matn (string) ko‘rinishiga o‘tdi.
                 headers: {
                     'Content-Type': 'application/json'  
                 }
@@ -183,13 +133,6 @@
                 document.querySelector("form").insertBefore(div, btn);
 
             } 
-
-
-            // Bu example uchun
-            // <div class="mb-3 form-check">                    
-            //     <label for="productIds">Pepsi</label>
-            //     <input class="form-check-input" type="checkbox" name="productIds"/>   
-            // </div>
         })   
         .catch(error=> console.log(error));
 
