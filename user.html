@@ -33,6 +33,7 @@
                     </tbody>
                 </table>
             </div>   
+            <!-- <a href="/user-add.html"><button class="btn btn-outline-warning">Create user</button></a> -->
             <br><br>
             <div>
                 <h3 style="text-align: center;">Users form</h3>
@@ -67,6 +68,8 @@
     </div>
 
     <script src="js/script.js"></script>
+    <script src="js/user.js"></script>
+    <script src="js/role.js"></script>
     <script>
         createNavbar();
 
@@ -108,12 +111,11 @@
         }
         
 
-        const productAddForm = document.querySelector("form");
-        productAddForm.addEventListener("submit", event => {
+        const userAddingForm = document.querySelector("form");
+        userAddingForm.addEventListener("submit", event => {
             event.preventDefault();
 
-            const data = new FormData(productAddForm);
-
+            const data = new FormData(userAddingForm);
             addUser(data)
             .then(data => {                                // json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
                 addingUserToTable(data)   
@@ -125,7 +127,7 @@
         function addingUserToTable(data)
         {
             let newRow = document.createElement("tr");
-            newRow.id = `delet-${data.id}`;
+            newRow.id = `${data.id}`;
                     newRow.innerHTML = `
                         <td>${data.id}</td>
                         <td>${data.firstName}</td>
@@ -135,7 +137,7 @@
                         <td>${data.createdAt}</td>
                         <td class="role-id">${data.roleId}</td>
                         <td><a href="/user-edit.html?${data.id}"><button class="btn btn-warning">изминеть</button></a></td>
-                        <td><button class="btn btn-danger">удалеть</button></td>
+                        <td><button class="btn btn-danger">удалить</button></td>
                     `;
 
                     let tbodyElement = document.getElementById("users");
@@ -150,7 +152,6 @@
                 row.remove();
             }  
         });
-    
        
     </script>
 

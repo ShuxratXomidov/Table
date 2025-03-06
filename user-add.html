@@ -6,15 +6,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link src="css/style.css">
     <link rel="icon" href="images/web-link.png">
-    <title>Users Page</title>
+    <link href="/user.html">
+    <title>Users Form Page</title>
 </head>
 <body>
     <div class="row">
         <div class="col-1">
         </div>
         <div class="col-10">
-            <div>
-            </div>   
             <br><br>
             <div>
                 <h3 style="text-align: center;">Users form</h3>
@@ -38,7 +37,7 @@
                        <select name="roleId" id="roles">
                        </select>
                     </div>
-                    <button class="btn btn-outline-warning" type="submit">Save</button>
+                    <button class="btn btn-outline-warning" type="submit">Add New User</button>
                 </form>
             </div>
         </div>
@@ -48,50 +47,68 @@
     <script src="js/user.js"></script>
     <script src="js/role.js"></script>
     <script>
-        createNavbar();
+        createNavbar();                   
 
-        getRoles().then(roles => {
+        replaceRoleIdsToRoleName();
+
+
+        function replaceRoleIdsToRoleName() {
+            getRoles().then(roles => {
+            const myUsersRolesIdElement = document.querySelectorAll(".role-id");
+            for (let i = 0; i < myUsersRolesIdElement.length; i++)
+            {
+                let role = roles.find(role => role.id == myUsersRolesIdElement[i].innerText);
+                myUsersRolesIdElement[i].innerText = role.name;
+            }
+            console.log(myUsersRolesIdElement);
             const mySelect = document.getElementById("roles");
-            for(let i = 0; i<roles.length; i++)
+            for(let i = 0; i< roles.length; i++)
             {
                 const newOptElement = document.createElement("option");
                 newOptElement.innerText = roles[i].name;
                 newOptElement.value = roles[i].id;
                 mySelect.appendChild(newOptElement);
             }
-        });
+            }).catch(error => {
+            console.log(error);
+            });
+        }
+        
 
-        const userId = window.location.search.replace("?", "");
-        getUserId(userId)
-        .then(user => {
-            document.getElementById("fname").value = user.firstName;
-            document.getElementById("lname").value = user.lastName;
-            document.getElementById("phone_number").value = user.phoneNumber;
-            document.getElementById("email").value = user.email;
-
-            const rolesSelect =  document.getElementById("roles");
-            for (let index = 0; index <rolesSelect.children.length; index++) {
-                const optionElement = rolesSelect.children[index];
-                if (optionElement.value == user.roleId)
-                {
-                    optionElement.selected = true;
-                }
-            }
-        })
-        .catch(error => console.log(error))
-
-        const form = document.querySelector("form");
-        form.addEventListener("submit", function() {
+        const userAddingForm = document.querySelector("form");
+        userAddingForm.addEventListener("submit", event => {
             event.preventDefault();
 
-            const data = new FormData(form);
-            updateUser(userId, data)
-                .then(data => {
-                    window.location.assign(front_domain +"user.html");
-                })
-                .catch(error => console.log(error)); 
+            const data = new FormData(userAddingForm);
+
+            addUser(data)
+            .then(data => {                                // json ga o'tkazilgan ma'lumotni data deb nomlab olinayapti!
+                addingUserToTable(data) 
+            })
+            .catch(error => console.log(error))
         });
 
+
+        function addingUserToTable(data)
+        {
+            let newRow = document.createElement("tr");
+            newRow.id = `${data.id}`;
+            newRow.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.firstName}</td>
+                <td>${data.lastName}</td>
+                <td>${data.phoneNumber}</td>
+                <td>${data.email}</td>
+                <td>${data.createdAt}</td>
+                <td class="role-id">${data.roleId}</td>
+                <td><a href="/user-edit.html?${data.id}"><button class="btn btn-warning">изминеть</button></a></td>
+                <td><button class="btn btn-danger">удалить</button></td>
+            `;
+
+            let tbodyElement = document.getElementById("users");
+            tbodyElement.appendChild(newRow); 
+        }
+       
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
